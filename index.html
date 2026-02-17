@@ -536,7 +536,7 @@ body{
         <!-- Header -->
         <header class="header">
             <h1>Xuân Phát Tài</h1>
-            <p>Phân tích MD5 với thuật toán 6 lớp tiên tiến - Dự đoán chính xác xu hướng Tài/Xỉu</p>
+            <p>Phân tích MD5 với thuật toán 20 lớp tiên tiến - Dự đoán chính xác xu hướng Tài/Xỉu</p>
         </header>
 
         <!-- Input Card -->
@@ -577,7 +577,7 @@ body{
         <div class="card results-section" id="results-section">
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Đang phân tích với 6 lớp thuật toán...</p>
+                <p>Đang phân tích với 10 lớp thuật toán...</p>
             </div>
 
             <div id="results-content" style="display: none;">
@@ -640,7 +640,7 @@ body{
 
         <!-- Footer -->
         <footer class="footer">
-            <p>MD5 Oracle v4.0 - Thuật toán phân tích 6 lớp chuyên sâu</p>
+            <p>MD5 HUYTOOL v5.5 - Thuật toán phân tích 20 lớp chuyên sâu</p>
             <p style="margin-top: 10px; font-size: 0.8rem; color: var(--gray-light);">
                 Hex Energy • Multi Modulo • Bit Entropy • Hex Cluster • Mirror Phase • Logistic Balance
             </p>
@@ -781,6 +781,101 @@ if (tai > xiu) {
 } else {
     xiu += boost;
 }
+// ================= LAYER 9: MD5 NUMBER 0-99 =================
+let num = 0;
+for (let i = 0; i < 32; i++) {
+    num += parseInt(md5[i], 16);
+}
+
+num = num % 100; // 0 → 99
+
+if (num >= 50) {
+    tai += 5;
+} else {
+    xiu += 5;
+}
+
+this.stats.md5Number = num;
+
+
+// ================= LAYER 10: TREND MOMENTUM =================
+let momentum = 0;
+for (let i = 1; i < hexVals.length; i++) {
+    momentum += (hexVals[i] - hexVals[i - 1]);
+}
+
+if (momentum > 0) {
+    tai += Math.abs(momentum) / 10;
+} else {
+    xiu += Math.abs(momentum) / 10;
+}
+
+this.stats.momentum = Math.round(momentum);
+// ================= LAYER 11: EVEN ODD BALANCE =================
+let even = 0, odd = 0;
+for (let v of hexVals) {
+    if (v % 2 === 0) even++; else odd++;
+}
+if (even > odd) tai += 2; else xiu += 2;
+
+
+// ================= LAYER 12: HIGH LOW HEX =================
+let high = hexVals.filter(v => v >= 8).length;
+let low = hexVals.length - high;
+if (high > low) tai += 2.5; else xiu += 2.5;
+
+
+// ================= LAYER 13: EDGE PRESSURE =================
+let edge = hexVals[0] + hexVals[31];
+if (edge > 15) tai += 2; else xiu += 2;
+
+
+// ================= LAYER 14: CENTER MASS =================
+let center = 0;
+for (let i = 12; i < 20; i++) center += hexVals[i];
+if (center > 60) tai += 3; else xiu += 3;
+
+
+// ================= LAYER 15: VARIANCE SPREAD =================
+let avg = hexVals.reduce((a,b)=>a+b,0)/hexVals.length;
+let variance = hexVals.reduce((a,b)=>a+(b-avg)**2,0)/hexVals.length;
+if (variance > 20) tai += 2; else xiu += 2;
+
+
+// ================= LAYER 16: ASCENDING CHAINS =================
+let asc = 0;
+for (let i = 1; i < hexVals.length; i++) {
+    if (hexVals[i] > hexVals[i-1]) asc++;
+}
+if (asc > 16) tai += 2; else xiu += 2;
+
+
+// ================= LAYER 17: DESCENDING CHAINS =================
+let desc = 0;
+for (let i = 1; i < hexVals.length; i++) {
+    if (hexVals[i] < hexVals[i-1]) desc++;
+}
+if (desc > 16) xiu += 2; else tai += 1.5;
+
+
+// ================= LAYER 18: PRIME INDEX FORCE =================
+const primes = [2,3,5,7,11,13,17,19,23,29];
+let primeSum = primes.reduce((s,i)=>s+(hexVals[i]||0),0);
+if (primeSum > 70) tai += 3; else xiu += 3;
+
+
+// ================= LAYER 19: HEX PAIR ENERGY =================
+let pairEnergy = 0;
+for (let i = 0; i < hexVals.length; i+=2) {
+    pairEnergy += hexVals[i] * (hexVals[i+1] || 1);
+}
+if (pairEnergy % 2 === 0) tai += 2; else xiu += 2;
+
+
+// ================= LAYER 20: RANDOM MICRO BOOST =================
+let micro = Math.random() * 2;
+if (tai > xiu) tai += micro;
+else xiu += micro;
 
                 // Calculate percentages
                 const total = tai + xiu;
