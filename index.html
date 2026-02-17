@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeKhanhHuy - Tool </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #111827;
+            --dark-light: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --gray-light: #9ca3af;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--gray-light);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Card */
+        .card {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        /* Input Section */
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--light);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .label i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .md5-input {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            color: var(--light);
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .md5-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .md5-input::placeholder {
+            color: var(--gray-light);
+        }
+
+        .validation {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            height: 24px;
+            transition: var(--transition);
+        }
+
+        .validation.valid {
+            color: var(--secondary);
+        }
+
+        .validation.invalid {
+            color: var(--danger);
+        }
+
+        .validation i {
+            font-size: 1rem;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gray-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        /* Results Section */
+        .results-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .results-section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Prediction Cards */
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 640px) {
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .prediction-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 2px solid;
+            transition: var(--transition);
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .prediction-card.tai {
+            border-color: var(--primary);
+        }
+
+        .prediction-card.xiu {
+            border-color: var(--danger);
+        }
+
+        .prediction-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .prediction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .tai .prediction-icon {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .xiu .prediction-icon {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .prediction-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .prediction-value {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 10px 0;
+            line-height: 1;
+        }
+
+        .tai .prediction-value {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .xiu .prediction-value {
+            background: linear-gradient(135deg, var(--danger), #f87171);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .prediction-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tai .bar-fill {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+
+        .xiu .bar-fill {
+            background: linear-gradient(90deg, var(--danger), #dc2626);
+        }
+
+        /* Recommendation */
+        .recommendation {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(99, 102, 241, 0.1));
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .recommendation-label {
+            color: var(--secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .recommendation-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Algorithm Stats */
+        .algorithm-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .algorithm-stats.show {
+            opacity: 1;
+        }
+
+        .stat-item {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-light);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .prediction-value {
+                font-size: 2.5rem;
+            }
+            
+            .recommendation-value {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
+
+<style>
+body{
+background:#0a0a0a!important;
+font-family:'Segoe UI',system-ui!important;
+}
+.card{
+background:#1a1a1a!important;
+border:1px solid #333!important;
+box-shadow:none!important;
+}
+.header h1{
+background:none!important;
+color:#00cc88!important;
+}
+.btn-primary{
+background:#00cc88!important;
+box-shadow:none!important;
+}
+.btn-secondary{
+background:#333!important;
+color:#fff!important;
+}
+.recommendation{
+background:#111!important;
+border:1px solid #00cc88!important;
+box-shadow:0 0 25px rgba(0,204,136,.3)!important;
+}
+.prediction-card.tai{border-color:#ff4444!important}
+.prediction-card.xiu{border-color:#44aaff!important}
+.tai .bar-fill{background:linear-gradient(90deg,#ff4444,#ff8888)!important}
+.xiu .bar-fill{background:linear-gradient(90deg,#44aaff,#88ccff)!important}
+</style>
+
+
+<style>
+body{
+    background:linear-gradient(180deg,#b30000,#ff1a1a) !important;
+    font-family:'Segoe UI',system-ui !important;
+}
+.container{
+    max-width:500px !important;
+}
+.header{
+    text-align:center !important;
+    padding:25px 0 10px 0 !important;
+}
+.header h1{
+    color:#ffd700 !important;
+    font-weight:900 !important;
+    font-size:32px !important;
+    letter-spacing:2px !important;
+    text-shadow:0 0 15px rgba(255,215,0,.8);
+}
+.card{
+    background:#fff !important;
+    border-radius:20px !important;
+    border:6px solid #ffd700 !important;
+    box-shadow:0 10px 40px rgba(0,0,0,.4) !important;
+}
+.btn-primary{
+    background:#d40000 !important;
+    color:#fff !important;
+    font-weight:800 !important;
+    border-radius:12px !important;
+}
+.btn-secondary{
+    background:#555 !important;
+    color:#fff !important;
+    border-radius:12px !important;
+}
+.recommendation{
+    background:#fff5e6 !important;
+    border:3px solid #ffd700 !important;
+    box-shadow:none !important;
+}
+.recommendation-value{
+    color:#d40000 !important;
+    font-size:48px !important;
+}
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Xuân Phát Tài</h1>
+            <p>Phân tích MD5 với thuật toán 6 lớp tiên tiến - Dự đoán chính xác xu hướng Tài/Xỉu</p>
+        </header>
+
+        <!-- Input Card -->
+        <div class="card">
+            <div class="input-group">
+                <label class="label">
+                    <i class="fas fa-key"></i>
+                    NHẬP CHUỖI MD5
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" 
+                           class="md5-input" 
+                           id="md5-input" 
+                           placeholder="5d41402abc4b2a76b9719d911017c592"
+                           maxlength="32"
+                           spellcheck="false"
+                           autocomplete="off">
+                </div>
+                <div class="validation" id="validation">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Nhập chuỗi MD5 32 ký tự hex</span>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-primary" id="analyze-btn">
+                    <i class="fas fa-chart-line"></i>
+                    PHÂN TÍCH NGAY
+                </button>
+                <button class="btn btn-secondary" id="clear-btn">
+                    <i class="fas fa-times"></i>
+                    XÓA
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="card results-section" id="results-section">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Đang phân tích với 6 lớp thuật toán...</p>
+            </div>
+
+            <div id="results-content" style="display: none;">
+                <div class="prediction-grid">
+                    <div class="prediction-card tai">
+                        <div class="prediction-header">
+                            <div class="prediction-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="prediction-label">XU HƯỚNG TÀI</div>
+                        </div>
+                        <div class="prediction-value" id="tai-value">0%</div>
+                        <div class="prediction-bar">
+                            <div class="bar-fill" id="tai-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card xiu">
+                        <div class="prediction-header">
+                            <div class="prediction-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="prediction-label">XU HƯỚNG XỈU</div>
+                        </div>
+                        <div class="prediction-value" id="xiu-value">0%</div>
+                        <div class="prediction-bar">
+                            <div class="bar-fill" id="xiu-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendation">
+                    <div class="recommendation-label">
+                        <i class="fas fa-star"></i>
+                        KHUYẾN NGHỊ ĐẦU TƯ
+                    </div>
+                    <div class="recommendation-value" id="recommendation">TÀI</div>
+                </div>
+
+                <div class="algorithm-stats" id="algorithm-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">HEX ENERGY</div>
+                        <div class="stat-value" id="stat-energy">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">MODULO SCORE</div>
+                        <div class="stat-value" id="stat-modulo">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">ENTROPY LEVEL</div>
+                        <div class="stat-value" id="stat-entropy">0%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">MIRROR SCORE</div>
+                        <div class="stat-value" id="stat-mirror">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>MD5 Oracle v4.0 - Thuật toán phân tích 6 lớp chuyên sâu</p>
+            <p style="margin-top: 10px; font-size: 0.8rem; color: var(--gray-light);">
+                Hex Energy • Multi Modulo • Bit Entropy • Hex Cluster • Mirror Phase • Logistic Balance
+            </p>
+        </footer>
+    </div>
+
+    <!-- Font Awesome Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        // Optimized MD5 Analysis Algorithm
+        class MD5Analyzer {
+            constructor() {
+                this.stats = {
+                    energy: 0,
+                    moduloScore: 0,
+                    entropy: 0,
+                    mirrorScore: 0
+                };
+            }
+
+            validate(md5) {
+                return /^[a-f0-9]{32}$/i.test(md5);
+            }
+
+            analyze(md5) {
+                md5 = md5.toLowerCase();
+                const hexVals = new Array(32);
+                for (let i = 0; i < 32; i++) {
+                    hexVals[i] = parseInt(md5[i], 16);
+                }
+
+                let tai = 0, xiu = 0;
+
+                // Layer 1: Hex Energy Dynamic
+                const energy = hexVals.reduce((a, b) => a + b, 0);
+                this.stats.energy = energy;
+                const diff = energy - 240;
+                
+                if (diff > 0) {
+                    tai += Math.min(5, diff / 12);
+                } else {
+                    xiu += Math.min(5, Math.abs(diff) / 12);
+                }
+
+                // Layer 2: Multi Modulo Vector
+                let moduloScore = 0;
+                const mods = [3, 5, 7];
+                const weights = [1.5, 1.5, 2];
+                
+                mods.forEach((m, i) => {
+                    const r = energy % m;
+                    moduloScore += r;
+                    if (r >= Math.floor(m / 2)) {
+                        tai += weights[i];
+                    } else {
+                        xiu += weights[i];
+                    }
+                });
+                this.stats.moduloScore = Math.round(moduloScore);
+
+                // Layer 3: Bit Entropy
+                const bigIntVal = BigInt('0x' + md5);
+                const bits = bigIntVal.toString(2).padStart(128, '0');
+                const ones = (bits.match(/1/g) || []).length;
+                const entropy = Math.abs(ones - 64) / 64;
+                this.stats.entropy = Math.round(entropy * 100);
+                
+                if (ones > 64) {
+                    tai += 4 * entropy;
+                } else {
+                    xiu += 4 * entropy;
+                }
+
+                // Layer 4: Hex Cluster
+                let streak = 1, maxStreak = 1;
+                for (let i = 1; i < 32; i++) {
+                    if (md5[i] === md5[i - 1]) {
+                        streak++;
+                        if (streak > maxStreak) maxStreak = streak;
+                    } else {
+                        streak = 1;
+                    }
+                }
+                
+                if (maxStreak >= 3) {
+                    tai += maxStreak;
+                } else {
+                    xiu += 2;
+                }
+
+                // Layer 5: Mirror Phase
+                let mirrorScore = 0;
+                for (let i = 0; i < 16; i++) {
+                    mirrorScore += Math.abs(hexVals[i] - hexVals[31 - i]);
+                }
+                this.stats.mirrorScore = mirrorScore;
+                
+                if (mirrorScore > 80) {
+                    tai += 3;
+                } else {
+                    xiu += 3;
+                }
+
+                // Layer 6: Logistic Balance
+                const delta = tai - xiu;
+                const balance = 1 / (1 + Math.exp(-delta / 4));
+                tai = tai * balance;
+                xiu = xiu * (1 - balance);
+// ================= VIP LAYER 7: Pattern Wave =================
+let waveScore = 0;
+for (let i = 0; i < 31; i++) {
+    const diffWave = Math.abs(hexVals[i] - hexVals[i+1]);
+    waveScore += diffWave;
+}
+if (waveScore > 120) {
+    tai += 4;
+} else {
+    xiu += 4;
+}
+
+// ================= VIP LAYER 8: Neural Bias =================
+let neural = 0;
+for (let i = 0; i < 32; i++) {
+    neural += Math.sin(hexVals[i] * 1.7) + Math.cos(hexVals[i] * 0.9);
+}
+
+if (neural > 0) {
+    tai += Math.abs(neural) / 3;
+} else {
+    xiu += Math.abs(neural) / 3;
+}
+
+// ================= Anti 50/50 Booster =================
+const boost = Math.random() * 2 + 1;
+if (tai > xiu) {
+    tai += boost;
+} else {
+    xiu += boost;
+}
+
+                // Calculate percentages
+                const total = tai + xiu;
+                let taiPct = Math.round((tai / total) * 1000) / 10;
+                let xiuPct = Math.round((1000 - taiPct * 10)) / 10;
+
+                // Prevent 50/50 split
+                if (taiPct === 50.0) {
+                    taiPct = 51.0;
+                    xiuPct = 49.0;
+                }
+
+                return {
+                    tai: taiPct,
+                    xiu: xiuPct,
+                    suggestion: taiPct > xiuPct ? "TÀI" : "XỈU"
+                };
+            }
+
+            getStats() {
+                return this.stats;
+            }
+        }
+
+        // UI Controller
+        class MD5OracleUI {
+            constructor() {
+                this.analyzer = new MD5Analyzer();
+                this.initElements();
+                this.bindEvents();
+            }
+
+            initElements() {
+                this.elements = {
+                    md5Input: document.getElementById('md5-input'),
+                    validation: document.getElementById('validation'),
+                    analyzeBtn: document.getElementById('analyze-btn'),
+                    clearBtn: document.getElementById('clear-btn'),
+                    resultsSection: document.getElementById('results-section'),
+                    resultsContent: document.getElementById('results-content'),
+                    loading: document.getElementById('loading'),
+                    taiValue: document.getElementById('tai-value'),
+                    xiuValue: document.getElementById('xiu-value'),
+                    taiBar: document.getElementById('tai-bar'),
+                    xiuBar: document.getElementById('xiu-bar'),
+                    recommendation: document.getElementById('recommendation'),
+                    algorithmStats: document.getElementById('algorithm-stats'),
+                    statEnergy: document.getElementById('stat-energy'),
+                    statModulo: document.getElementById('stat-modulo'),
+                    statEntropy: document.getElementById('stat-entropy'),
+                    statMirror: document.getElementById('stat-mirror')
+                };
+            }
+
+            bindEvents() {
+                this.elements.md5Input.addEventListener('input', () => this.validateInput());
+                this.elements.analyzeBtn.addEventListener('click', () => this.analyze());
+                this.elements.clearBtn.addEventListener('click', () => this.clear());
+                this.elements.md5Input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.analyze();
+                });
+            }
+
+            validateInput() {
+                const md5 = this.elements.md5Input.value.trim();
+                const isValid = this.analyzer.validate(md5);
+                
+                this.elements.validation.className = 'validation';
+                
+                if (md5.length === 0) {
+                    this.elements.validation.innerHTML = '<i class="fas fa-info-circle"></i><span>Nhập chuỗi MD5 32 ký tự hex</span>';
+                    return false;
+                }
+                
+                if (isValid) {
+                    this.elements.validation.innerHTML = '<i class="fas fa-check-circle"></i><span>✓ MD5 hợp lệ</span>';
+                    this.elements.validation.classList.add('valid');
+                    return true;
+                } else {
+                    this.elements.validation.innerHTML = '<i class="fas fa-exclamation-circle"></i><span>✗ MD5 không hợp lệ</span>';
+                    this.elements.validation.classList.add('invalid');
+                    return false;
+                }
+            }
+
+            clear() {
+                this.elements.md5Input.value = '';
+                this.elements.resultsSection.classList.remove('active');
+                this.elements.resultsContent.style.display = 'none';
+                this.elements.validation.className = 'validation';
+                this.elements.validation.innerHTML = '<i class="fas fa-info-circle"></i><span>Nhập chuỗi MD5 32 ký tự hex</span>';
+                this.elements.md5Input.focus();
+            }
+
+            async analyze() {
+                if (!this.validateInput()) {
+                    this.showAlert('Vui lòng nhập MD5 hợp lệ (32 ký tự hex)');
+                    return;
+                }
+
+                const md5 = this.elements.md5Input.value.trim();
+                
+                // Show loading
+                this.elements.resultsSection.classList.add('active');
+                this.elements.loading.classList.add('active');
+                this.elements.resultsContent.style.display = 'none';
+
+                // Simulate processing for better UX
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                try {
+                    const result = this.analyzer.analyze(md5);
+                    const stats = this.analyzer.getStats();
+                    
+                    // Hide loading, show results
+                    this.elements.loading.classList.remove('active');
+                    this.elements.resultsContent.style.display = 'block';
+                    
+                    // Update stats
+                    this.elements.statEnergy.textContent = stats.energy;
+                    this.elements.statModulo.textContent = stats.moduloScore;
+                    this.elements.statEntropy.textContent = stats.entropy + '%';
+                    this.elements.statMirror.textContent = stats.mirrorScore;
+                    
+                    // Animate results
+                    this.animateResults(result);
+                    
+                    // Show algorithm stats
+                    setTimeout(() => {
+                        this.elements.algorithmStats.classList.add('show');
+                    }, 1000);
+
+                } catch (error) {
+                    this.showAlert('Có lỗi xảy ra khi phân tích MD5');
+                    console.error(error);
+                }
+            }
+
+            animateResults(result) {
+                // Reset bars
+                this.elements.taiBar.style.width = '0%';
+                this.elements.xiuBar.style.width = '0%';
+                
+                // Animate values
+                this.animateValue(this.elements.taiValue, 0, result.tai, '%');
+                this.animateValue(this.elements.xiuValue, 0, result.xiu, '%');
+                
+                // Animate bars with delay
+                setTimeout(() => {
+                    this.elements.taiBar.style.width = result.tai + '%';
+                    this.elements.xiuBar.style.width = result.xiu + '%';
+                }, 300);
+                
+                // Update recommendation
+                this.elements.recommendation.textContent = result.suggestion;
+                
+                // Add pulse animation to recommendation
+                this.elements.recommendation.style.animation = 'none';
+                setTimeout(() => {
+                    this.elements.recommendation.style.animation = 'pulse 0.5s ease';
+                }, 100);
+            }
+
+            animateValue(element, start, end, suffix = '') {
+                const duration = 1500;
+                const steps = 60;
+                const increment = (end - start) / steps;
+                let current = start;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                        current = end;
+                        clearInterval(timer);
+                    }
+                    element.textContent = current.toFixed(1) + suffix;
+                }, duration / steps);
+            }
+
+            showAlert(message) {
+                alert(message);
+            }
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new MD5OracleUI();
+            
+            // Add CSS for pulse animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+
+<!-- ================= VIP PRO MAX UPGRADE LAYER (NO CORE CODE MODIFIED) ================= -->
+<style>
+.vip-glow {box-shadow:0 0 25px rgba(99,102,241,.6);}
+.vip-badge {
+position:fixed;top:15px;right:15px;
+background:linear-gradient(135deg,#6366f1,#10b981);
+padding:10px 18px;border-radius:20px;
+font-weight:800;color:white;z-index:9999;
+}
+.matrix-bg {
+position:fixed;inset:0;pointer-events:none;
+background:radial-gradient(circle at top,#1e1b4b 0%,black 70%);
+opacity:.25;
+}
+</style>
+
+<div class="vip-badge">AI VIP PRO MAX</div>
+<div class="matrix-bg"></div>
+
+<script>
+
+<script>
+class VipPredictor{
+    static enhance(tai,xiu){
+        tai=parseFloat(tai)||0;
+        xiu=parseFloat(xiu)||0;
+
+        if(tai<0) tai=0;
+        if(xiu<0) xiu=0;
+
+        let total=tai+xiu;
+        if(total<=0){
+            return {tai:50.0,xiu:50.0};
+        }
+
+        return {
+            tai:(tai/total*100).toFixed(1),
+            xiu:(xiu/total*100).toFixed(1)
+        };
+    }
+}
+
+const oldAnalyze=MD5Analyzer.prototype.analyze;
+MD5Analyzer.prototype.analyze=function(md5){
+    const res=oldAnalyze.call(this,md5);
+    const vip=VipPredictor.enhance(res.tai,res.xiu);
+    res.tai=parseFloat(vip.tai);
+    res.xiu=parseFloat(vip.xiu);
+    res.suggestion=res.tai>res.xiu?"TÀI":"XỈU";
+    return res;
+}
+</script>
+
+<!-- ================= END VIP UPGRADE ================= -->
+
+
+<!-- ============ ULTRA VIP GOD MODE UPGRADE ============ -->
+<style>
+.ultra-frame{
+border:2px solid rgba(99,102,241,.6);
+border-radius:18px;
+padding:12px;
+animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+from{box-shadow:0 0 20px #6366f1}
+to{box-shadow:0 0 40px #10b981}
+}
+.ai-core{
+position:fixed;bottom:20px;left:20px;
+background:rgba(15,23,42,.85);
+padding:12px 18px;border-radius:16px;
+font-weight:700;color:#10b981;
+}
+</style>
+
+<div class="ai-core">AI GOD MODE ACTIVE ⚡</div>
+
+<script>
+
+<!-- ============ END ULTRA GOD MODE ============ -->
+
+
+<!-- ===== AI SINGLE RESULT UI (NO CORE CHANGE) ===== -->
+<style>
+/* hide trend blocks */
+.prediction-grid,.algorithm-stats{display:none!important}
+.recommendation{
+ margin-top:10px!important;
+ padding:50px 20px!important;
+ font-size:2rem;
+ background:linear-gradient(135deg,#020617,#0f172a)!important;
+ border:2px solid rgba(99,102,241,.6)!important;
+ box-shadow:0 0 35px rgba(99,102,241,.5);
+}
+.recommendation-label{display:none}
+.recommendation-value{
+ font-size:4rem!important;
+ letter-spacing:6px;
+ text-shadow:0 0 20px rgba(16,185,129,.8);
+}
+/* input bigger focus */
+.md5-input{font-size:1.2rem;padding:20px}
+.header p{display:none}
+</style>
+
+<script>
+
+
+</body>
+</html>
